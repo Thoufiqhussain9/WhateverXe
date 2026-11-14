@@ -197,5 +197,5 @@ int main(int argc,char **argv){
 '''.replace('INSTALL',install).replace('START',start).replace('WRAPPER',wrapper).replace('ENTRY',entry).replace('CALL',call)
 with tempfile.TemporaryDirectory(prefix='panel-timing-') as d:
  p=Path(d);(p/'test.cpp').write_text(code)
- subprocess.run(['clang++','-arch','x86_64','-std=c++17','-O1','-g','-fsanitize=address,undefined','-I'+str(r/'WhateverXe'),str(p/'test.cpp'),'-o',str(p/'test')],check=True)
+ subprocess.run(['clang++','-std=c++17','-O1','-g','-fsanitize=address,undefined','-I'+str(r/'WhateverXe'),str(p/'test.cpp'),'-o',str(p/'test')],check=True)
  subprocess.run([str(p/'test')]+sys.argv[1:],check=True,env=dict(os.environ,UBSAN_OPTIONS="halt_on_error=1"))

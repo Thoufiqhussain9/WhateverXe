@@ -13834,7 +13834,7 @@ bool XE::adlsCapturePanelPWM(void *controller) {
  auto &f=s->tglTCNativeFunctions;f.getPG(power,1);
  const auto read=[&](uint32_t reg){return FunctionCast(wrapTGLRegisterRead,s->orgTGLRegisterRead)(access,reg);};
  const auto wells=read(0x45404),fuse=read(0x42000);
- if(wells!=~0U && fuse!=~0U && (wells&1) && (fuse&0x01000000)) {
+ if(wells!=~0U && (wells&1)) {
   const auto period=read(0xC8254),control=read(0xC8250);
   const auto &p=s->firmwarePorts.panel;
   s->adlsPanelPWM=XELP::PanelPWM::select(period,control,period?0:read(0xC2014),p.pwmHz,p.activeLowPWM);
@@ -13863,7 +13863,7 @@ uint32_t XE::wrapADLSPanelBacklight(void *controller,uint32_t brightness) {
  auto &f=s->tglTCNativeFunctions;f.getPG(power,1);
  const auto wells=FunctionCast(wrapTGLRegisterRead,s->orgTGLRegisterRead)(access,0x45404);
  const auto fuse=FunctionCast(wrapTGLRegisterRead,s->orgTGLRegisterRead)(access,0x42000);
- const bool ready=wells!=~0U && fuse!=~0U && (wells&1) && (fuse&0x01000000);
+ const bool ready=wells!=~0U && (wells&1);
  if(ready) {
   wrapTGLRegisterWrite(access,0xC8258,duty);
   *reinterpret_cast<uint32_t *>(static_cast<uint8_t *>(controller)+0xE58)=brightness;
